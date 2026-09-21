@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Mapeo Proyector</title>
+<style>
+  :root{
+    --ui-bg: rgba(16,16,20,.92);
+    --ui-border: rgba(255,255,255,.12);
+    --ui-text: #e8e8ec;
+    --ui-dim: #8a8a96;
+    --ui-accent: #ffc23d;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;height:100%;background:#000;overflow:hidden;
+    font-family:ui-sans-serif,system-ui,"Segoe UI",sans-serif;color:var(--ui-text)}
+  /* width/height explícitos: el canvas es un elemento reemplazado y con
+     inset:0 a secas se quedaría en su tamaño intrínseco de 300x150 */
+  #stage{position:fixed;top:0;left:0;width:100vw;height:100vh;display:block;cursor:default}
+  #stage.calib{cursor:crosshair}
+
+  #ui{
+    position:fixed;top:0;right:0;height:100%;width:310px;overflow-y:auto;
+    background:var(--ui-bg);border-left:1px solid var(--ui-border);
+    padding:14px 14px 40px;font-size:12px;backdrop-filter:blur(8px);
+    transition:transform .18s ease; z-index:10;
+  }
+  #ui.hidden{transform:translateX(100%)}
+  /* el panel tapa una franja: con P se cambia de lado para alcanzar las
+     esquinas que queden debajo */
+  #ui.left{right:auto;left:0;border-left:none;border-right:1px solid var(--ui-border)}
+  #ui.left.hidden{transform:translateX(-100%)}
+  #ui h1{font-size:13px;margin:0 0 2px;letter-spacing:.06em;text-transform:uppercase}
+  #ui .sub{color:var(--ui-dim);font-size:11px;margin-bottom:14px}
+  fieldset{border:1px solid var(--ui-border);border-radius:8px;margin:0 0 12px;padding:10px}
+  legend{color:var(--ui-dim);font-size:10px;text-transform:uppercase;letter-spacing:.08em;padding:0 4px}
+  label{display:block;margin:8px 0 3px;color:var(--ui-dim);font-size:11px}
+  input[type=range]{width:100%;accent-color:var(--ui-accent)}
+  select,button,input[type=text]{
+    width:100%;background:#25252c;color:var(--ui-text);border:1px solid var(--ui-border);
+    border-radius:6px;padding:6px 8px;font-size:12px;font-family:inherit}
+  button{cursor:pointer}
+  button:hover{background:#32323b}
+  button.on{background:var(--ui-accent);color:#151515;border-color:var(--ui-accent);font-weight:600}
+  .row{display:flex;gap:6px;margin-top:6px}
+  .row>*{flex:1}
+  .val{float:right;color:var(--ui-text);font-variant-numeric:tabular-nums}
+  #surfList{max-height:130px;overflow-y:auto;margin-top:6px}
+  .surfItem{padding:5px 7px;border-radius:5px;cursor:pointer;display:flex;align-items:center;gap:7px;
+    border:1px solid transparent}
+  .surfItem:hover{background:#2a2a33}
+  .surfItem.sel{background:#2f2f3a;border-color:var(--ui-accent)}
+  .dot{width:9px;height:9px;border-radius:50%;flex:none}
+  kbd{background:#2c2c35;border:1px solid var(--ui-border);border-bottom-width:2px;border-radius:4px;
+    padding:1px 5px;font-size:10px;font-family:ui-monospace,monospace}
+  #help{color:var(--ui-dim);line-height:1.9;font-size:11px}
+  #meter{height:5px;background:#2a2a33;border-radius:3px;overflow:hidden;margin-top:8px}
+  #meterFill{height:100%;width:0%;background:var(--ui-accent);transition:width .05s linear}
+  #toast{position:fixed;left:50%;bottom:34px;transform:translateX(-50%);
+    background:rgba(0,0,0,.82);border:1px solid var(--ui-border);border-radius:8px;
+    padding:9px 16px;font-size:13px;opacity:0;transition:opacity .25s;pointer-events:none;z-index:20}
+  #toast.show{opacity:1}
+  audio{display:none}
+</style>
+</head>
+<body>
+
+<canvas id="stage"></canvas>
+<audio id="player"></audio>
+<div id="toast"></div>
+
+<div id="ui">
+  <h1>Mapeo Proyector</h1>
+  <div class="sub"><kbd>H</kbd> ocultar panel · <kbd>C</kbd> calibrar · <kbd>F</kbd> pantalla completa</div>
+
+  <fieldset>
+    <legend>Audio</legend>
+    <div class="row">
+      <button id="btnFile">Archivo</button>
+      <button id="btnMic">Micro</button>
+      <button id="btnTab">Pestaña</button>
+    </div>
+    <input type="file" id="fileInput" accept="audio/*" hidden>
+    <div class="row"><button id="btnPlay">▶ Reproducir</button></div>
+    <div id="meter"><div id="meterFill"></div></div>
+    <label>Sensibilidad <span class="val" id="vGain">1.4</span></label>
+    <input type="range" id="gain" min="0.2" max="5" step="0.1" value="1.4">
+    <label>Suavizado <span class="val" id="vSmooth">0.55</span></label>
+    <input type="range" id="smooth" min="0" max="0.95" step="0.05" value="0.55">
+  </fieldset>
+
+  <fieldset>
+    <legend>Superficies</legend>
+    <div id="surfList"></div>
+    <div class="row">
+      <button id="btnAdd">+ Nueva</button>
+      <button id="btnDup">Duplicar</button>
+      <button id="btnDel">Borrar</button>
+    </div>
+  </fieldset>
+
+  <fieldset>
+    <legend>Superficie seleccionada</legend>
+    <label>Columnas <span class="val" id="vCols">8</span></label>
+    <input type="range" id="cols" min="1" max="40" step="1" value="8">
+    <label>Filas <span class="val" id="vRows">5</span></label>
+    <input type="range" id="rows" min="1" max="40" step="1" value="5">
+    <label>Aparejo (filas alternas) <span class="val" id="vStagger">0</span></label>
+    <input type="range" id="stagger" min="0" max="1" step="0.05" value="0">
+    <label>Efecto</label>
+    <select id="effect">
+      <option value="grid">1 · Rejilla (como el vídeo)</option>
+      <option value="cells">2 · Ladrillos sueltos</option>
+      <option value="bars">3 · Ecualizador</option>
+      <option value="ripple">4 · Ondas desde el centro</option>
+      <option value="sweep">5 · Barrido</option>
+      <option value="random">6 · Aleatorio al ritmo</option>
+      <option value="wave">7 · Ola horizontal</option>
+      <option value="outline">8 · Solo contorno</option>
+    </select>
+    <label>Color <span class="val" id="vHue">48°</span></label>
+    <input type="range" id="hue" min="0" max="360" step="1" value="48">
+    <div class="row"><button id="btnRainbow">Arcoíris: no</button></div>
+    <label>Grosor de línea <span class="val" id="vWidth">3</span></label>
+    <input type="range" id="lw" min="1" max="20" step="0.5" value="3">
+    <label>Resplandor (glow) <span class="val" id="vGlow">14</span></label>
+    <input type="range" id="glow" min="0" max="40" step="1" value="14">
+    <label>Reacción al audio <span class="val" id="vReact">0.8</span></label>
+    <input type="range" id="react" min="0" max="1" step="0.05" value="0.8">
+    <label>Brillo base <span class="val" id="vBase">0.18</span></label>
+    <input type="range" id="base" min="0" max="1" step="0.02" value="0.18">
+  </fieldset>
+
+  <fieldset>
+    <legend>Proyector</legend>
+    <div class="row">
+      <button id="btnCalib">Calibrar (C)</button>
+      <button id="btnTest">Patrón de foco</button>
+    </div>
+    <div class="row">
+      <button id="btnFull">Pantalla completa</button>
+      <button id="btnBlack">Negro (B)</button>
+    </div>
+    <div class="row">
+      <button id="btnSave">Guardar</button>
+      <button id="btnExport">Exportar</button>
+      <button id="btnImport">Importar</button>
+    </div>
+    <input type="file" id="importInput" accept="application/json" hidden>
+  </fieldset>
+
+  <fieldset>
+    <legend>Atajos</legend>
+    <div id="help">
+      <kbd>C</kbd> modo calibración · arrastra las 4 esquinas<br>
+      <kbd>Tab</kbd> siguiente superficie<br>
+      <kbd>↑↓←→</kbd> mover esquina activa 1 px<br>
+      <kbd>1</kbd>–<kbd>8</kbd> cambiar efecto<br>
+      <kbd>Espacio</kbd> play / pausa<br>
+      <kbd>B</kbd> fundido a negro · <kbd>H</kbd> ocultar UI<br>
+      <kbd>P</kbd> panel al otro lado · <kbd>T</kbd> patrón de foco
+    </div>
+  </fieldset>
+</div>
+
+<script>
+(() => {
+"use strict";
+
+// ───────────────────────────── estado ─────────────────────────────
+const LS_KEY = "mapeo-proyector-v1";
+
+const defaultSurface = (i = 0) => ({
+  name: "Superficie " + (i + 1),
+  // esquinas en coordenadas normalizadas 0..1 → TL, TR, BR, BL
+  corners: [{x:.22,y:.28},{x:.78,y:.28},{x:.78,y:.72},{x:.22,y:.72}],
+  cols: 8, rows: 5,
+  effect: "grid",
+  hue: 48, rainbow: false,
+  lw: 3, glow: 14,
+  react: .8, base: .18,
+  bandOffset: 0,
+  stagger: 0        // aparejo: desplazamiento de las filas impares (0..1 celda)
+});
+
+let state = {
+  surfaces: [defaultSurface(0)],
+  sel: 0,
+  gain: 1.4,
+  smooth: .55
+};
+
+let calib = false, uiHidden = false, blackout = false, testPattern = false;
+let dragCorner = -1, activeCorner = 0;
+
+// ───────────────────────────── canvas ─────────────────────────────
+const cv = document.getElementById("stage");
+const ctx = cv.getContext("2d", { alpha: false });
+let W = 0, H = 0, DPR = 1;
+
+function resize() {
+  DPR = Math.min(window.devicePixelRatio || 1, 2);
+  W = cv.clientWidth; H = cv.clientHeight;
+  cv.width  = Math.round(W * DPR);
+  cv.height = Math.round(H * DPR);
+  ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+}
+window.addEventListener("resize", resize);
+
+// ───────────────────────── homografía ─────────────────────────
+// Mapea el cuadrado unitario (0,0)(1,0)(1,1)(0,1) a los 4 puntos dados.
+// Permite deformar la rejilla en perspectiva real, no solo un trapecio.
+function computeH(p) {
+  const [x0,y0] = [p[0].x, p[0].y], [x1,y1] = [p[1].x, p[1].y];
+  const [x2,y2] = [p[2].x, p[2].y], [x3,y3] = [p[3].x, p[3].y];
+  const dx1 = x1-x2, dx2 = x3-x2, dx3 = x0-x1+x2-x3;
+  const dy1 = y1-y2, dy2 = y3-y2, dy3 = y0-y1+y2-y3;
+  let a,b,c,d,e,f,g,h;
+  if (Math.abs(dx3) < 1e-9 && Math.abs(dy3) < 1e-9) {
+    a = x1-x0; b = x2-x1; c = x0;
+    d = y1-y0; e = y2-y1; f = y0;
+    g = 0; h = 0;
+  } else {
+    const den = dx1*dy2 - dy1*dx2;
+    if (Math.abs(den) < 1e-9) return null;
+    g = (dx3*dy2 - dy3*dx2) / den;
+    h = (dx1*dy3 - dy1*dx3) / den;
+    a = x1-x0 + g*x1; b = x3-x0 + h*x3; c = x0;
+    d = y1-y0 + g*y1; e = y3-y0 + h*y3; f = y0;
+  }
+  return (u,v) => {
+    const w = g*u + h*v + 1;
+    return [(a*u + b*v + c)/w, (d*u + e*v + f)/w];
+  };
+}
+
+const cornersPx = s => s.corners.map(c => ({ x: c.x * W, y: c.y * H }));
+
+// ───────────────────────────── audio ─────────────────────────────
+const NBANDS = 48;
+let actx = null, analyser = null, srcNode = null, freqData = null;
+let bands = new Float32Array(NBANDS);
+let level = 0, bassLevel = 0;
+let bassHist = [], beat = 0, beatPhase = 0, lastBeatAt = 0;
+
+const player = document.getElementById("player");
+
+function ensureCtx() {
+  if (!actx) {
+    actx = new (window.AudioContext || window.webkitAudioContext)();
+    analyser = actx.createAnalyser();
+    analyser.fftSize = 2048;
+    analyser.smoothingTimeConstant = 0.7;
+    freqData = new Uint8Array(analyser.frequencyBinCount);
+  }
+  if (actx.state === "suspended") actx.resume();
+  return actx;
+}
+
+function connectSource(node, toSpeakers) {
+  if (srcNode) { try { srcNode.disconnect(); } catch(e){} }
+  srcNode = node;
+  srcNode.connect(analyser);
+  if (toSpeakers) srcNode.connect(actx.destination);
+}
+
+// Índices logarítmicos: reparte las 48 bandas entre 30 Hz y 16 kHz
+let bandBins = null;
+function buildBandBins() {
+  const nyq = actx.sampleRate / 2, n = analyser.frequencyBinCount;
+  const fmin = 30, fmax = Math.min(16000, nyq);
+  bandBins = [];
+  for (let i = 0; i <= NBANDS; i++) {
+    const f = fmin * Math.pow(fmax / fmin, i / NBANDS);
+    bandBins.push(Math.min(n - 1, Math.max(0, Math.round(f / nyq * n))));
+  }
+}
+
+function readAudio(dt) {
+  if (!analyser) {
+    // Sin audio: latido suave para poder calibrar viendo algo
+    const t = performance.now() / 1000;
+    level = .35 + .25 * Math.sin(t * 2.2);
+    for (let i = 0; i < NBANDS; i++)
+      bands[i] = .3 + .3 * Math.sin(t * 2 + i * .45);
+    beat = Math.max(0, beat - dt * 3);
+    if (t % 0.5 < dt) beat = 1;
+    beatPhase += dt * .6;
+    return;
+  }
+  if (!bandBins) buildBandBins();
+  analyser.getByteFrequencyData(freqData);
+  analyser.smoothingTimeConstant = state.smooth;
+
+  let sum = 0;
+  for (let i = 0; i < NBANDS; i++) {
+    let lo = bandBins[i], hi = Math.max(lo + 1, bandBins[i+1]), acc = 0;
+    for (let b = lo; b < hi; b++) acc += freqData[b];
+    let v = (acc / (hi - lo)) / 255;
+    // compensa la caída natural de energía en agudos
+    v = Math.pow(v, .78) * (1 + i / NBANDS * 1.1) * state.gain;
+    v = Math.min(1, v);
+    bands[i] = bands[i] * .55 + v * .45;   // suavizado propio
+    sum += bands[i];
+  }
+  level = Math.min(1, sum / NBANDS * 1.5);
+
+  // graves para la detección de golpe
+  let bAcc = 0;
+  for (let b = 1; b < 12; b++) bAcc += freqData[b];
+  bassLevel = bAcc / 11 / 255 * state.gain;
+  bassHist.push(bassLevel);
+  if (bassHist.length > 43) bassHist.shift();
+  const avg = bassHist.reduce((a, b) => a + b, 0) / bassHist.length;
+  const now = performance.now();
+  if (bassLevel > avg * 1.32 && bassLevel > .15 && now - lastBeatAt > 180) {
+    beat = 1; lastBeatAt = now; beatPhase += 1;
+  } else {
+    beat = Math.max(0, beat - dt * 3.2);
+  }
+}
+
+// ───────────────────────────── efectos ─────────────────────────────
+// Devuelve la intensidad 0..1 de la celda (col i, fila j) de una superficie
+function cellValue(s, i, j, t) {
+  const ii = Math.max(0, i);   // i puede ser -1 (medio ladrillo del aparejo)
+  const idx = ((ii + j * 3 + s.bandOffset) % NBANDS + NBANDS) % NBANDS;
+  switch (s.effect) {
+    case "bars": {
+      const b = bands[Math.min(NBANDS - 1, Math.floor(ii / s.cols * NBANDS))];
+      const fromBottom = (s.rows - j) / s.rows;
+      return b >= fromBottom ? 1 : Math.max(0, 1 - (fromBottom - b) * 6);
+    }
+    case "cells":
+      return bands[idx];
+    case "ripple": {
+      const cx = (s.cols - 1) / 2, cy = (s.rows - 1) / 2;
+      const d = Math.hypot(i - cx, j - cy) / Math.hypot(cx + 1, cy + 1);
+      const w = Math.sin((beatPhase * 1.2 - d * 3.2) * Math.PI * 2);
+      return Math.max(0, w) * (.35 + level * .8);
+    }
+    case "sweep": {
+      const pos = (beatPhase * .5) % 1;
+      const d = Math.abs(i / Math.max(1, s.cols - 1) - pos);
+      return Math.max(0, 1 - d * 5) * (.4 + level);
+    }
+    case "random": {
+      // ruido estable por celda que se "rebaraja" en cada golpe
+      const seed = Math.sin((i * 12.9898 + j * 78.233 + Math.floor(beatPhase) * 43.1) ) * 43758.5453;
+      const r = seed - Math.floor(seed);
+      return r > .62 ? (.4 + level * .9) : level * .08;
+    }
+    case "wave": {
+      const w = Math.sin(t * 1.8 + i * .55 + j * .3);
+      return Math.max(0, w) * (.3 + level * .9);
+    }
+    default:
+      return level;
+  }
+}
+
+function colorOf(s, t, shift = 0) {
+  const hue = s.rainbow ? (s.hue + t * 40 + shift * 90) % 360 : s.hue;
+  return hue;
+}
+
+function drawSurface(s, t) {
+  const P = computeH(cornersPx(s));
+  if (!P) return;
+
+  const hue = colorOf(s, t);
+  const pulse = s.base + (s.react * (level * .75 + beat * .45));
+  const lw = s.lw * (1 + beat * s.react * .5);
+
+  ctx.save();
+  ctx.lineCap = "round";
+  ctx.lineJoin = "round";
+  if (s.glow > 0) {
+    ctx.shadowBlur = s.glow * (0.6 + level * .8);
+    ctx.shadowColor = `hsl(${hue} 100% 60%)`;
+  }
+
+  if (s.effect === "outline") {
+    const a = Math.min(1, pulse);
+    ctx.strokeStyle = `hsla(${hue} 100% 62% / ${a})`;
+    ctx.lineWidth = lw * 1.6;
+    ctx.beginPath();
+    const c = cornersPx(s);
+    ctx.moveTo(c[0].x, c[0].y);
+    for (let k = 1; k < 4; k++) ctx.lineTo(c[k].x, c[k].y);
+    ctx.closePath();
+    ctx.stroke();
+    ctx.restore();
+    return;
+  }
+
+  if (s.effect === "grid") {
+    // Solo las líneas de la rejilla: es el look del vídeo.
+    const a = Math.min(1, pulse);
+    ctx.lineWidth = lw;
+    const stag = (s.stagger || 0) / s.cols;
+    // Verticales. Con aparejo (stagger) se dibujan por tramos de fila,
+    // porque las juntas verticales se desplazan en las filas impares.
+    for (let j = 0; j < s.rows; j++) {
+      const off = (j % 2) * stag;
+      const v0 = j / s.rows, v1 = (j + 1) / s.rows;
+      for (let i = 0; i <= s.cols; i++) {
+        let u = i / s.cols + off;
+        if (u > 1 + 1e-6) continue;
+        const bandA = Math.min(1, a * (.55 + bands[Math.floor(u * (NBANDS - 1))] * .9));
+        ctx.strokeStyle = `hsla(${colorOf(s, t, u)} 100% 62% / ${bandA})`;
+        ctx.beginPath();
+        const p0 = P(u, v0), p1 = P(u, v1);
+        ctx.moveTo(p0[0], p0[1]); ctx.lineTo(p1[0], p1[1]);
+        ctx.stroke();
+      }
+      // los dos bordes que el desplazamiento deja descubiertos
+      if (off > 1e-6) {
+        for (const u of [0, 1]) {
+          const bandA = Math.min(1, a * (.55 + bands[u ? NBANDS - 1 : 0] * .9));
+          ctx.strokeStyle = `hsla(${colorOf(s, t, u)} 100% 62% / ${bandA})`;
+          ctx.beginPath();
+          const p0 = P(u, v0), p1 = P(u, v1);
+          ctx.moveTo(p0[0], p0[1]); ctx.lineTo(p1[0], p1[1]);
+          ctx.stroke();
+        }
+      }
+    }
+    for (let j = 0; j <= s.rows; j++) {
+      const v = j / s.rows;
+      const bandA = Math.min(1, a * (.55 + bands[Math.floor((1 - v) * (NBANDS - 1))] * .9));
+      ctx.strokeStyle = `hsla(${colorOf(s, t, v)} 100% 62% / ${bandA})`;
+      ctx.beginPath();
+      const p0 = P(0, v), p1 = P(1, v);
+      ctx.moveTo(p0[0], p0[1]); ctx.lineTo(p1[0], p1[1]);
+      ctx.stroke();
+    }
+    ctx.restore();
+    return;
+  }
+
+  // Efectos por celda: relleno + borde
+  ctx.globalCompositeOperation = "lighter";
+  for (let j = 0; j < s.rows; j++) {
+    // i = -1 cubre el medio ladrillo que el aparejo deja al borde izquierdo
+    for (let i = -1; i < s.cols; i++) {
+      let v = cellValue(s, i, j, t) * s.react + s.base;
+      v = Math.max(0, Math.min(1, v));
+      if (v < 0.015) continue;
+      const off = (j % 2) * (s.stagger || 0) / s.cols;
+      let u0 = i / s.cols + off, u1 = (i + 1) / s.cols + off;
+      if (u1 <= 1e-6 || u0 >= 1 - 1e-6) continue;
+      u0 = Math.max(0, u0);              // recorta los ladrillos que salen del quad
+      u1 = Math.min(1, u1);
+      const v0 = j / s.rows, v1 = (j + 1) / s.rows;
+      // margen interior para que se vea la junta de mortero entre ladrillos
+      const m = 0.055;
+      const au = u0 + (u1 - u0) * m, bu = u1 - (u1 - u0) * m;
+      const av = v0 + (v1 - v0) * m, bv = v1 - (v1 - v0) * m;
+      const q = [P(au,av), P(bu,av), P(bu,bv), P(au,bv)];
+      const cellHue = colorOf(s, t, (i / s.cols + j / s.rows) * .5);
+      ctx.beginPath();
+      ctx.moveTo(q[0][0], q[0][1]);
+      for (let k = 1; k < 4; k++) ctx.lineTo(q[k][0], q[k][1]);
+      ctx.closePath();
+      ctx.fillStyle = `hsla(${cellHue} 95% ${28 + v * 32}% / ${v * .85})`;
+      ctx.fill();
+      if (s.lw > 0.5) {
+        ctx.lineWidth = s.lw * .6;
+        ctx.strokeStyle = `hsla(${cellHue} 100% 68% / ${Math.min(1, v * 1.1)})`;
+        ctx.stroke();
+      }
+    }
+  }
+  ctx.restore();
+}
+
+// ───────────────────── superposición de calibración ─────────────────────
+function drawCalib() {
+  ctx.save();
+  state.surfaces.forEach((s, si) => {
+    const c = cornersPx(s);
+    const isSel = si === state.sel;
+    ctx.setLineDash(isSel ? [] : [6, 6]);
+    ctx.lineWidth = isSel ? 2 : 1;
+    ctx.strokeStyle = isSel ? "#ffffff" : "rgba(255,255,255,.35)";
+    ctx.beginPath();
+    ctx.moveTo(c[0].x, c[0].y);
+    for (let k = 1; k < 4; k++) ctx.lineTo(c[k].x, c[k].y);
+    ctx.closePath();
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    if (isSel) {
+      const labels = ["1", "2", "3", "4"];
+      c.forEach((p, k) => {
+        const act = k === activeCorner;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, act ? 13 : 9, 0, Math.PI * 2);
+        ctx.fillStyle = act ? "#ffc23d" : "rgba(255,255,255,.85)";
+        ctx.fill();
+        ctx.lineWidth = 2; ctx.strokeStyle = "#000"; ctx.stroke();
+        ctx.fillStyle = "#000";
+        ctx.font = "bold 11px ui-sans-serif,system-ui,sans-serif";
+        ctx.textAlign = "center"; ctx.textBaseline = "middle";
+        ctx.fillText(labels[k], p.x, p.y + .5);
+      });
+      // nombre de la superficie en el centro
+      const cx = (c[0].x + c[2].x) / 2, cy = (c[0].y + c[2].y) / 2;
+      ctx.fillStyle = "rgba(255,255,255,.55)";
+      ctx.font = "12px ui-sans-serif,system-ui,sans-serif";
+      ctx.fillText(s.name, cx, cy);
+    }
+  });
+  ctx.restore();
+}
+
+function drawTestPattern() {
+  // Rejilla fina + círculos: sirve para enfocar y encuadrar el proyector
+  ctx.save();
+  ctx.strokeStyle = "rgba(255,255,255,.5)";
+  ctx.lineWidth = 1;
+  const step = 40;
+  ctx.beginPath();
+  for (let x = 0; x <= W; x += step) { ctx.moveTo(x, 0); ctx.lineTo(x, H); }
+  for (let y = 0; y <= H; y += step) { ctx.moveTo(0, y); ctx.lineTo(W, y); }
+  ctx.stroke();
+  ctx.strokeStyle = "#fff"; ctx.lineWidth = 3;
+  ctx.strokeRect(2, 2, W - 4, H - 4);
+  ctx.beginPath(); ctx.arc(W/2, H/2, Math.min(W,H) * .35, 0, Math.PI*2); ctx.stroke();
+  ctx.fillStyle = "#fff";
+  ctx.font = "16px ui-monospace,monospace";
+  ctx.textAlign = "center";
+  ctx.fillText(`${Math.round(W)} × ${Math.round(H)} — enfoca hasta ver la rejilla nítida`, W/2, H/2);
+  ctx.restore();
+}
+
+// ───────────────────────────── bucle ─────────────────────────────
+let last = performance.now();
+function frame(now) {
+  const dt = Math.min(.05, (now - last) / 1000);
+  last = now;
+  const t = now / 1000;
+
+  readAudio(dt);
+
+  ctx.fillStyle = "#000";
+  ctx.fillRect(0, 0, W, H);
+
+  if (testPattern) {
+    drawTestPattern();
+  } else if (!blackout) {
+    for (const s of state.surfaces) drawSurface(s, t);
+  }
+  if (calib && !testPattern) drawCalib();
+
+  meterFill.style.width = Math.round(level * 100) + "%";
+  requestAnimationFrame(frame);
+}
+
+// ───────────────────────────── ratón ─────────────────────────────
+function pos(e) {
+  const r = cv.getBoundingClientRect();
+  return { x: e.clientX - r.left, y: e.clientY - r.top };
+}
+
+cv.addEventListener("pointerdown", e => {
+  if (!calib) return;
+  const p = pos(e);
+  // ¿esquina de la superficie seleccionada?
+  const c = cornersPx(state.surfaces[state.sel]);
+  for (let k = 0; k < 4; k++) {
+    if (Math.hypot(c[k].x - p.x, c[k].y - p.y) < 22) {
+      dragCorner = k; activeCorner = k; cv.setPointerCapture(e.pointerId);
+      return;
+    }
+  }
+  // si no, ¿el clic cae dentro de otra superficie? → seleccionarla
+  for (let si = 0; si < state.surfaces.length; si++) {
+    if (pointInQuad(p, cornersPx(state.surfaces[si]))) {
+      state.sel = si; syncUI(); return;
+    }
+  }
+});
+
+cv.addEventListener("pointermove", e => {
+  if (dragCorner < 0) return;
+  const p = pos(e);
+  const s = state.surfaces[state.sel];
+  s.corners[dragCorner] = { x: p.x / W, y: p.y / H };
+});
+
+cv.addEventListener("pointerup", e => {
+  if (dragCorner >= 0) { dragCorner = -1; save(true); }
+});
+
+function pointInQuad(p, q) {
+  let inside = false;
+  for (let i = 0, j = 3; i < 4; j = i++) {
+    const xi = q[i].x, yi = q[i].y, xj = q[j].x, yj = q[j].y;
+    if (((yi > p.y) !== (yj > p.y)) && (p.x < (xj - xi) * (p.y - yi) / (yj - yi) + xi))
+      inside = !inside;
+  }
+  return inside;
+}
+
+// ───────────────────────────── UI ─────────────────────────────
+const $ = id => document.getElementById(id);
+const ui = $("ui"), meterFill = $("meterFill"), toastEl = $("toast");
+
+let toastTimer = null;
+function toast(msg) {
+  toastEl.textContent = msg;
+  toastEl.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toastEl.classList.remove("show"), 1800);
+}
+
+const bind = (id, prop, fmt) => {
+  const el = $(id);
+  el.addEventListener("input", () => {
+    const v = parseFloat(el.value);
+    state.surfaces[state.sel][prop] = v;
+    const lbl = $("v" + id.charAt(0).toUpperCase() + id.slice(1));
+    if (lbl) lbl.textContent = fmt ? fmt(v) : v;
+    save(true);
+  });
+};
+bind("cols", "cols"); bind("rows", "rows");
+bind("hue", "hue", v => v + "°"); bind("lw", "lw");
+bind("glow", "glow"); bind("react", "react"); bind("base", "base");
+bind("stagger", "stagger", v => v.toFixed(2));
+
+$("effect").addEventListener("change", e => {
+  state.surfaces[state.sel].effect = e.target.value; save(true);
+});
+$("btnRainbow").addEventListener("click", () => {
+  const s = state.surfaces[state.sel];
+  s.rainbow = !s.rainbow; syncUI(); save(true);
+});
+$("gain").addEventListener("input", e => {
+  state.gain = parseFloat(e.target.value); $("vGain").textContent = state.gain.toFixed(1); save(true);
+});
+$("smooth").addEventListener("input", e => {
+  state.smooth = parseFloat(e.target.value); $("vSmooth").textContent = state.smooth.toFixed(2); save(true);
+});
+
+function renderSurfList() {
+  const box = $("surfList");
+  box.innerHTML = "";
+  state.surfaces.forEach((s, i) => {
+    const d = document.createElement("div");
+    d.className = "surfItem" + (i === state.sel ? " sel" : "");
+    d.innerHTML = `<span class="dot" style="background:hsl(${s.hue} 100% 60%)"></span>
+                   <span>${s.name}</span>
+                   <span style="margin-left:auto;color:#8a8a96">${s.cols}×${s.rows}</span>`;
+    d.addEventListener("click", () => { state.sel = i; syncUI(); });
+    box.appendChild(d);
+  });
+}
+
+function syncUI() {
+  const s = state.surfaces[state.sel];
+  $("cols").value = s.cols;  $("vCols").textContent = s.cols;
+  $("rows").value = s.rows;  $("vRows").textContent = s.rows;
+  $("hue").value = s.hue;    $("vHue").textContent = s.hue + "°";
+  $("lw").value = s.lw;      $("vWidth").textContent = s.lw;
+  $("glow").value = s.glow;  $("vGlow").textContent = s.glow;
+  $("react").value = s.react;$("vReact").textContent = s.react.toFixed(2);
+  $("base").value = s.base;  $("vBase").textContent = s.base.toFixed(2);
+  const st = s.stagger || 0;
+  $("stagger").value = st; $("vStagger").textContent = st.toFixed(2);
+  $("effect").value = s.effect;
+  const rb = $("btnRainbow");
+  rb.textContent = "Arcoíris: " + (s.rainbow ? "sí" : "no");
+  rb.classList.toggle("on", !!s.rainbow);
+  $("btnCalib").classList.toggle("on", calib);
+  $("btnBlack").classList.toggle("on", blackout);
+  $("btnTest").classList.toggle("on", testPattern);
+  renderSurfList();
+}
+
+$("btnAdd").addEventListener("click", () => {
+  const s = defaultSurface(state.surfaces.length);
+  s.hue = (state.surfaces.length * 67) % 360;
+  state.surfaces.push(s);
+  state.sel = state.surfaces.length - 1;
+  calib = true; cv.classList.add("calib");
+  syncUI(); save(true);
+});
+$("btnDup").addEventListener("click", () => {
+  const s = JSON.parse(JSON.stringify(state.surfaces[state.sel]));
+  s.name = "Superficie " + (state.surfaces.length + 1);
+  s.corners = s.corners.map(c => ({ x: Math.min(1, c.x + .03), y: Math.min(1, c.y + .03) }));
+  state.surfaces.push(s); state.sel = state.surfaces.length - 1;
+  syncUI(); save(true);
+});
+$("btnDel").addEventListener("click", () => {
+  if (state.surfaces.length <= 1) return toast("Debe quedar al menos una superficie");
+  state.surfaces.splice(state.sel, 1);
+  state.sel = Math.max(0, state.sel - 1);
+  syncUI(); save(true);
+});
+
+// ── audio: archivo ──
+$("btnFile").addEventListener("click", () => $("fileInput").click());
+$("fileInput").addEventListener("change", e => {
+  const f = e.target.files[0];
+  if (!f) return;
+  ensureCtx();
+  player.src = URL.createObjectURL(f);
+  if (!player._node) { player._node = actx.createMediaElementSource(player); }
+  connectSource(player._node, true);
+  bandBins = null;
+  player.play();
+  $("btnPlay").textContent = "⏸ Pausa";
+  toast("Reproduciendo: " + f.name);
+});
+
+$("btnPlay").addEventListener("click", togglePlay);
+function togglePlay() {
+  if (!player.src) return toast("Carga primero un archivo de audio");
+  if (player.paused) { ensureCtx(); player.play(); $("btnPlay").textContent = "⏸ Pausa"; }
+  else { player.pause(); $("btnPlay").textContent = "▶ Reproducir"; }
+}
+
+// ── audio: micrófono ──
+$("btnMic").addEventListener("click", async () => {
+  try {
+    ensureCtx();
+    const stream = await navigator.mediaDevices.getUserMedia({
+      audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false }
+    });
+    connectSource(actx.createMediaStreamSource(stream), false);
+    bandBins = null;
+    toast("Micrófono activo — reacciona al sonido de la sala");
+  } catch (err) { toast("No se pudo abrir el micrófono"); }
+});
+
+// ── audio: captura de pestaña/pantalla ──
+$("btnTab").addEventListener("click", async () => {
+  try {
+    ensureCtx();
+    const stream = await navigator.mediaDevices.getDisplayMedia({ video: true, audio: true });
+    const at = stream.getAudioTracks();
+    if (!at.length) {
+      stream.getTracks().forEach(t => t.stop());
+      return toast('Marca la casilla "Compartir audio de la pestaña"');
+    }
+    stream.getVideoTracks().forEach(t => t.stop());
+    connectSource(actx.createMediaStreamSource(new MediaStream(at)), false);
+    bandBins = null;
+    toast("Capturando audio de la pestaña (Spotify/YouTube web)");
+  } catch (err) { toast("Captura cancelada"); }
+});
+
+// ── proyector ──
+$("btnCalib").addEventListener("click", () => setCalib(!calib));
+function setCalib(v) {
+  calib = v; cv.classList.toggle("calib", calib); syncUI();
+  if (calib) toast("Calibración: arrastra las esquinas sobre la pared");
+}
+$("btnTest").addEventListener("click", () => { testPattern = !testPattern; syncUI(); });
+$("btnFull").addEventListener("click", () => {
+  if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+  else document.exitFullscreen();
+});
+$("btnBlack").addEventListener("click", () => { blackout = !blackout; syncUI(); });
+
+// ── guardar / cargar ──
+function save(silent) {
+  try {
+    localStorage.setItem(LS_KEY, JSON.stringify(state));
+    if (!silent) toast("Mapeo guardado");
+  } catch (e) { if (!silent) toast("No se pudo guardar"); }
+}
+function load() {
+  try {
+    const raw = localStorage.getItem(LS_KEY);
+    if (!raw) return;
+    const s = JSON.parse(raw);
+    if (s && Array.isArray(s.surfaces) && s.surfaces.length) {
+      state = Object.assign(state, s);
+      state.sel = Math.min(state.sel || 0, state.surfaces.length - 1);
+    }
+  } catch (e) {}
+}
+$("btnSave").addEventListener("click", () => save(false));
+$("btnExport").addEventListener("click", () => {
+  const blob = new Blob([JSON.stringify(state, null, 2)], { type: "application/json" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "mapeo-preset.json";
+  a.click();
+  toast("Preset exportado");
+});
+$("btnImport").addEventListener("click", () => $("importInput").click());
+$("importInput").addEventListener("change", e => {
+  const f = e.target.files[0]; if (!f) return;
+  const r = new FileReader();
+  r.onload = () => {
+    try {
+      const s = JSON.parse(r.result);
+      if (s && Array.isArray(s.surfaces)) {
+        state = Object.assign(state, s); state.sel = 0; syncUI(); save(true);
+        toast("Preset cargado");
+      }
+    } catch (err) { toast("Archivo no válido"); }
+  };
+  r.readAsText(f);
+});
+
+// ───────────────────────────── teclado ─────────────────────────────
+const EFFECTS = ["grid","cells","bars","ripple","sweep","random","wave","outline"];
+window.addEventListener("keydown", e => {
+  if (e.target.tagName === "INPUT" || e.target.tagName === "SELECT") return;
+  const k = e.key.toLowerCase();
+  if (k === "h") { uiHidden = !uiHidden; ui.classList.toggle("hidden", uiHidden); }
+  else if (k === "p") { ui.classList.toggle("left"); }
+  else if (k === "c") setCalib(!calib);
+  else if (k === "f") $("btnFull").click();
+  else if (k === "b") { blackout = !blackout; syncUI(); }
+  else if (k === "t") { testPattern = !testPattern; syncUI(); }
+  else if (k === " ") { e.preventDefault(); togglePlay(); }
+  else if (k === "tab") {
+    e.preventDefault();
+    state.sel = (state.sel + 1) % state.surfaces.length; syncUI();
+  }
+  else if (k >= "1" && k <= "8") {
+    state.surfaces[state.sel].effect = EFFECTS[parseInt(k) - 1]; syncUI(); save(true);
+  }
+  else if (calib && k.startsWith("arrow")) {
+    e.preventDefault();
+    const s = state.surfaces[state.sel];
+    const step = e.shiftKey ? 10 : 1;
+    const c = s.corners[activeCorner];
+    if (k === "arrowleft")  c.x -= step / W;
+    if (k === "arrowright") c.x += step / W;
+    if (k === "arrowup")    c.y -= step / H;
+    if (k === "arrowdown")  c.y += step / H;
+    save(true);
+  }
+  else if (calib && (k === "q" || k === "e")) {
+    activeCorner = (activeCorner + (k === "e" ? 1 : 3)) % 4;
+  }
+});
+
+// ───────────────────────────── arranque ─────────────────────────────
+load();
+resize();
+syncUI();
+setCalib(true);
+requestAnimationFrame(frame);
+
+})();
+</script>
+</body>
+</html>

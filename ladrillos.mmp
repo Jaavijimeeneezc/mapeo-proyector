@@ -1,0 +1,1485 @@
+{
+    "layers": [
+        {
+            "className": "ColorLayer",
+            "depth": "45",
+            "destination": {
+                "className": "Mesh",
+                "locked": "false",
+                "nColumns": "2",
+                "nRows": "2",
+                "vertices": [
+                    [
+                        515.84,
+                        344.83
+                    ],
+                    [
+                        572.16,
+                        344.83
+                    ],
+                    [
+                        515.84,
+                        403.97
+                    ],
+                    [
+                        572.16,
+                        403.97
+                    ]
+                ]
+            },
+            "id": 45,
+            "locked": "false",
+            "name": "ladrillo r4c7",
+            "opacity": "0.5809999704360962",
+            "solo": "false",
+            "sourceId": 2,
+            "visible": "true"
+        },
+        {
+            "className": "ColorLayer",
+            "depth": "44",
+            "destination": {
+                "className": "Mesh",
+                "locked": "false",
+                "nColumns": "2",
+                "nRows": "2",
+                "vertices": [
+                    [
+                        451.84,
+                        344.83
+                    ],
+                    [
+                        508.16,
+                        344.83
+                    ],
+                    [
+                        451.84,
+                        403.97
+                    ],
+                    [
+                        508.16,
+                        403.97
+                    ]
+                ]
+            },
+            "id": 44,
+            "locked": "false",
+            "name": "ladrillo r4c6",
+            "opacity": "0.31299999356269836",
+            "solo": "false",
+            "sourceId": 2,
+            "visible": "true"
+        },
+        {
+            "className": "ColorLayer",
+            "depth": "43",
+            "destination": {
+                "className": "Mesh",
+                "locked": "false",
+                "nColumns": "2",
+                "nRows": "2",
+                "vertices": [
+                    [
+                        387.84,
+                        344.83
+                    ],
+                    [
+                        444.16,
+                        344.83
+                    ],
+                    [
+                        387.84,
+                        403.97
+                    ],
+                    [
+                        444.16,
+                        403.97
+                    ]
+                ]
+            },
+            "id": 43,
+            "locked": "false",
+            "name": "ladrillo r4c5",
+            "opacity": "0.7559999823570251",
+            "solo": "false",
+            "sourceId": 2,
+            "visible": "true"
+        },
+        {
+            "className": "ColorLayer",
+            "depth": "42",
+            "destination": {
+                "className": "Mesh",
+                "locked": "false",
+                "nColumns": "2",
+                "nRows": "2",
+                "vertices": [
+                    [
+                        323.84,
+                        344.83
+                    ],
+                    [
+                        380.16,
+                        344.83
+                    ],
+                    [
+                        323.84,
+                        403.97
+                    ],
+                    [
+                        380.16,
+                        403.97
+                    ]
+                ]
+            },
+            "id": 42,
+            "locked": "false",
+            "name": "ladrillo r4c4",
+            "opacity": "0.6610000133514404",
+            "solo": "false",
+            "sourceId": 2,
+            "visible": "true"
+        },
+        {
+            "className": "ColorLayer",
+            "depth": "38",
+            "destination": {
+                "className": "Mesh",
+                "locked": "false",
+                "nColumns": "2",
+                "nRows": "2",
+                "vertices": [
+                    [
+                        259.84,
+                        344.83
+                    ],
+                    [
+                        316.16,
+                        344.83
+                    ],
+                    [
+                        259.84,
+                        403.97
+                    ],
+                    [
+                        316.16,
+                        403.97
+                    ]
+                ]
+            },
+            "id": 38,
+            "locked": "false",
+            "name": "ladrillo r4c3",
+            "opacity": "0.8199999928474426",
+            "solo": "false",
+            "sourceId": 2,
+            "visible": "true"
+        },
+        {
+            "className": "ColorLayer",
+            "depth": "37",
+            "destination": {
+                "className": "Mesh",
+                "locked": "false",
+                "nColumns": "2",
+                "nRows": "2",
+                "vertices": [
+                    [
+                        195.84,
+                        344.83
+                    ],
+                    [
+                        252.16,
+                        344.83
+                    ],
+                    [
+                        195.84,
+                        403.97
+                    ],
+                    [
+                        252.16,
+                        403.97
+                    ]
+                ]
+            },
+            "id": 37,
+            "locked": "false",
+            "name": "ladrillo r4c2",
+            "opacity": "1",
+            "solo": "false",
+            "sourceId": 2,
+            "visible": "true"
+        },
+        {
+            "className": "ColorLayer",
+            "depth": "36",
+            "destination": {
+                "className": "Mesh",
+                "locked": "false",
+                "nColumns": "2",
+                "nRows": "2",
+                "vertices": [
+                    [
+                        131.84,
+                        344.83
+                    ],
+                    [
+                        188.16,
+                        344.83
+                    ],
+                    [
+                        131.84,
+                        403.97
+                    ],
+                    [
+                        188.16,
+                        403.97
+                    ]
+                ]
+            },
+            "id": 36,
+            "locked": "false",
+            "name": "ladrillo r4c1",
+            "opacity": "0.8799999952316284",
+            "solo": "false",
+            "sourceId": 2,
+            "visible": "true"
+        },
+        {
+            "className": "ColorLayer",
+            "depth": "35",
+            "destination": {
+                "className": "Mesh",
+                "locked": "false",
+                "nColumns": "2",
+                "nRows": "2",
+                "vertices": [
+                    [
+                        67.84,
+                        344.83
+                    ],
+                    [
+                        124.16,
+                        344.83
+                    ],
+                    [
+                        67.84,
+                        403.97
+                    ],
+                    [
+                        124.16,
+                        403.97
+                    ]
+                ]
+            },
+            "id": 35,
+            "locked": "false",
+            "name": "ladrillo r4c0",
+            "opacity": "0.6349999904632568",
+            "solo": "false",
+            "sourceId": 2,
+            "visible": "true"
+        },
+        {
+            "className": "ColorLayer",
+            "depth": "34",
+            "destination": {
+                "className": "Mesh",
+                "locked": "false",
+                "nColumns": "2",
+                "nRows": "2",
+                "vertices": [
+                    [
+                        545.92,
+                        277.63
+                    ],
+                    [
+                        574.08,
+                        277.63
+                    ],
+                    [
+                        545.92,
+                        336.77
+                    ],
+                    [
+                        574.08,
+                        336.77
+                    ]
+                ]
+            },
+            "id": 34,
+            "locked": "false",
+            "name": "ladrillo r3c7",
+            "opacity": "0.6299999952316284",
+            "solo": "false",
+            "sourceId": 2,
+            "visible": "true"
+        },
+        {
+            "className": "ColorLayer",
+            "depth": "33",
+            "destination": {
+                "className": "Mesh",
+                "locked": "false",
+                "nColumns": "2",
+                "nRows": "2",
+                "vertices": [
+                    [
+                        483.84,
+                        277.63
+                    ],
+                    [
+                        540.16,
+                        277.63
+                    ],
+                    [
+                        483.84,
+                        336.77
+                    ],
+                    [
+                        540.16,
+                        336.77
+                    ]
+                ]
+            },
+            "id": 33,
+            "locked": "false",
+            "name": "ladrillo r3c6",
+            "opacity": "0.4580000042915344",
+            "solo": "false",
+            "sourceId": 2,
+            "visible": "true"
+        },
+        {
+            "className": "ColorLayer",
+            "depth": "32",
+            "destination": {
+                "className": "Mesh",
+                "locked": "false",
+                "nColumns": "2",
+                "nRows": "2",
+                "vertices": [
+                    [
+                        419.84,
+                        277.63
+                    ],
+                    [
+                        476.16,
+                        277.63
+                    ],
+                    [
+                        419.84,
+                        336.77
+                    ],
+                    [
+                        476.16,
+                        336.77
+                    ]
+                ]
+            },
+            "id": 32,
+            "locked": "false",
+            "name": "ladrillo r3c5",
+            "opacity": "1",
+            "solo": "false",
+            "sourceId": 2,
+            "visible": "true"
+        },
+        {
+            "className": "ColorLayer",
+            "depth": "31",
+            "destination": {
+                "className": "Mesh",
+                "locked": "false",
+                "nColumns": "2",
+                "nRows": "2",
+                "vertices": [
+                    [
+                        355.84,
+                        277.63
+                    ],
+                    [
+                        412.16,
+                        277.63
+                    ],
+                    [
+                        355.84,
+                        336.77
+                    ],
+                    [
+                        412.16,
+                        336.77
+                    ]
+                ]
+            },
+            "id": 31,
+            "locked": "false",
+            "name": "ladrillo r3c4",
+            "opacity": "0.6610000133514404",
+            "solo": "false",
+            "sourceId": 2,
+            "visible": "true"
+        },
+        {
+            "className": "ColorLayer",
+            "depth": "30",
+            "destination": {
+                "className": "Mesh",
+                "locked": "false",
+                "nColumns": "2",
+                "nRows": "2",
+                "vertices": [
+                    [
+                        291.84,
+                        277.63
+                    ],
+                    [
+                        348.16,
+                        277.63
+                    ],
+                    [
+                        291.84,
+                        336.77
+                    ],
+                    [
+                        348.16,
+                        336.77
+                    ]
+                ]
+            },
+            "id": 30,
+            "locked": "false",
+            "name": "ladrillo r3c3",
+            "opacity": "0.8199999928474426",
+            "solo": "false",
+            "sourceId": 2,
+            "visible": "true"
+        },
+        {
+            "className": "ColorLayer",
+            "depth": "29",
+            "destination": {
+                "className": "Mesh",
+                "locked": "false",
+                "nColumns": "2",
+                "nRows": "2",
+                "vertices": [
+                    [
+                        227.84,
+                        277.63
+                    ],
+                    [
+                        284.16,
+                        277.63
+                    ],
+                    [
+                        227.84,
+                        336.77
+                    ],
+                    [
+                        284.16,
+                        336.77
+                    ]
+                ]
+            },
+            "id": 29,
+            "locked": "false",
+            "name": "ladrillo r3c2",
+            "opacity": "1",
+            "solo": "false",
+            "sourceId": 2,
+            "visible": "true"
+        },
+        {
+            "className": "ColorLayer",
+            "depth": "28",
+            "destination": {
+                "className": "Mesh",
+                "locked": "false",
+                "nColumns": "2",
+                "nRows": "2",
+                "vertices": [
+                    [
+                        163.84,
+                        277.63
+                    ],
+                    [
+                        220.16,
+                        277.63
+                    ],
+                    [
+                        163.84,
+                        336.77
+                    ],
+                    [
+                        220.16,
+                        336.77
+                    ]
+                ]
+            },
+            "id": 28,
+            "locked": "false",
+            "name": "ladrillo r3c1",
+            "opacity": "0.8799999952316284",
+            "solo": "false",
+            "sourceId": 2,
+            "visible": "true"
+        },
+        {
+            "className": "ColorLayer",
+            "depth": "27",
+            "destination": {
+                "className": "Mesh",
+                "locked": "false",
+                "nColumns": "2",
+                "nRows": "2",
+                "vertices": [
+                    [
+                        99.84,
+                        277.63
+                    ],
+                    [
+                        156.16,
+                        277.63
+                    ],
+                    [
+                        99.84,
+                        336.77
+                    ],
+                    [
+                        156.16,
+                        336.77
+                    ]
+                ]
+            },
+            "id": 27,
+            "locked": "false",
+            "name": "ladrillo r3c0",
+            "opacity": "0.6349999904632568",
+            "solo": "false",
+            "sourceId": 2,
+            "visible": "true"
+        },
+        {
+            "className": "ColorLayer",
+            "depth": "26",
+            "destination": {
+                "className": "Mesh",
+                "locked": "false",
+                "nColumns": "2",
+                "nRows": "2",
+                "vertices": [
+                    [
+                        65.92,
+                        277.63
+                    ],
+                    [
+                        94.08,
+                        277.63
+                    ],
+                    [
+                        65.92,
+                        336.77
+                    ],
+                    [
+                        94.08,
+                        336.77
+                    ]
+                ]
+            },
+            "id": 26,
+            "locked": "false",
+            "name": "ladrillo r3c0",
+            "opacity": "0.6349999904632568",
+            "solo": "false",
+            "sourceId": 2,
+            "visible": "true"
+        },
+        {
+            "className": "ColorLayer",
+            "depth": "25",
+            "destination": {
+                "className": "Mesh",
+                "locked": "false",
+                "nColumns": "2",
+                "nRows": "2",
+                "vertices": [
+                    [
+                        515.84,
+                        210.43
+                    ],
+                    [
+                        572.16,
+                        210.43
+                    ],
+                    [
+                        515.84,
+                        269.57
+                    ],
+                    [
+                        572.16,
+                        269.57
+                    ]
+                ]
+            },
+            "id": 25,
+            "locked": "false",
+            "name": "ladrillo r2c7",
+            "opacity": "0.6299999952316284",
+            "solo": "false",
+            "sourceId": 2,
+            "visible": "true"
+        },
+        {
+            "className": "ColorLayer",
+            "depth": "24",
+            "destination": {
+                "className": "Mesh",
+                "locked": "false",
+                "nColumns": "2",
+                "nRows": "2",
+                "vertices": [
+                    [
+                        451.84,
+                        210.43
+                    ],
+                    [
+                        508.16,
+                        210.43
+                    ],
+                    [
+                        451.84,
+                        269.57
+                    ],
+                    [
+                        508.16,
+                        269.57
+                    ]
+                ]
+            },
+            "id": 24,
+            "locked": "false",
+            "name": "ladrillo r2c6",
+            "opacity": "0.4580000042915344",
+            "solo": "false",
+            "sourceId": 2,
+            "visible": "true"
+        },
+        {
+            "className": "ColorLayer",
+            "depth": "23",
+            "destination": {
+                "className": "Mesh",
+                "locked": "false",
+                "nColumns": "2",
+                "nRows": "2",
+                "vertices": [
+                    [
+                        387.84,
+                        210.43
+                    ],
+                    [
+                        444.16,
+                        210.43
+                    ],
+                    [
+                        387.84,
+                        269.57
+                    ],
+                    [
+                        444.16,
+                        269.57
+                    ]
+                ]
+            },
+            "id": 23,
+            "locked": "false",
+            "name": "ladrillo r2c5",
+            "opacity": "1",
+            "solo": "false",
+            "sourceId": 2,
+            "visible": "true"
+        },
+        {
+            "className": "ColorLayer",
+            "depth": "22",
+            "destination": {
+                "className": "Mesh",
+                "locked": "false",
+                "nColumns": "2",
+                "nRows": "2",
+                "vertices": [
+                    [
+                        323.84,
+                        210.43
+                    ],
+                    [
+                        380.16,
+                        210.43
+                    ],
+                    [
+                        323.84,
+                        269.57
+                    ],
+                    [
+                        380.16,
+                        269.57
+                    ]
+                ]
+            },
+            "id": 22,
+            "locked": "false",
+            "name": "ladrillo r2c4",
+            "opacity": "0.6610000133514404",
+            "solo": "false",
+            "sourceId": 2,
+            "visible": "true"
+        },
+        {
+            "className": "ColorLayer",
+            "depth": "21",
+            "destination": {
+                "className": "Mesh",
+                "locked": "false",
+                "nColumns": "2",
+                "nRows": "2",
+                "vertices": [
+                    [
+                        259.84,
+                        210.43
+                    ],
+                    [
+                        316.16,
+                        210.43
+                    ],
+                    [
+                        259.84,
+                        269.57
+                    ],
+                    [
+                        316.16,
+                        269.57
+                    ]
+                ]
+            },
+            "id": 21,
+            "locked": "false",
+            "name": "ladrillo r2c3",
+            "opacity": "0.8199999928474426",
+            "solo": "false",
+            "sourceId": 2,
+            "visible": "true"
+        },
+        {
+            "className": "ColorLayer",
+            "depth": "20",
+            "destination": {
+                "className": "Mesh",
+                "locked": "false",
+                "nColumns": "2",
+                "nRows": "2",
+                "vertices": [
+                    [
+                        195.84,
+                        210.43
+                    ],
+                    [
+                        252.16,
+                        210.43
+                    ],
+                    [
+                        195.84,
+                        269.57
+                    ],
+                    [
+                        252.16,
+                        269.57
+                    ]
+                ]
+            },
+            "id": 20,
+            "locked": "false",
+            "name": "ladrillo r2c2",
+            "opacity": "1",
+            "solo": "false",
+            "sourceId": 2,
+            "visible": "true"
+        },
+        {
+            "className": "ColorLayer",
+            "depth": "19",
+            "destination": {
+                "className": "Mesh",
+                "locked": "false",
+                "nColumns": "2",
+                "nRows": "2",
+                "vertices": [
+                    [
+                        131.84,
+                        210.43
+                    ],
+                    [
+                        188.16,
+                        210.43
+                    ],
+                    [
+                        131.84,
+                        269.57
+                    ],
+                    [
+                        188.16,
+                        269.57
+                    ]
+                ]
+            },
+            "id": 19,
+            "locked": "false",
+            "name": "ladrillo r2c1",
+            "opacity": "0.8799999952316284",
+            "solo": "false",
+            "sourceId": 2,
+            "visible": "true"
+        },
+        {
+            "className": "ColorLayer",
+            "depth": "18",
+            "destination": {
+                "className": "Mesh",
+                "locked": "false",
+                "nColumns": "2",
+                "nRows": "2",
+                "vertices": [
+                    [
+                        67.84,
+                        210.43
+                    ],
+                    [
+                        124.16,
+                        210.43
+                    ],
+                    [
+                        67.84,
+                        269.57
+                    ],
+                    [
+                        124.16,
+                        269.57
+                    ]
+                ]
+            },
+            "id": 18,
+            "locked": "false",
+            "name": "ladrillo r2c0",
+            "opacity": "0.6349999904632568",
+            "solo": "false",
+            "sourceId": 2,
+            "visible": "true"
+        },
+        {
+            "className": "ColorLayer",
+            "depth": "17",
+            "destination": {
+                "className": "Mesh",
+                "locked": "false",
+                "nColumns": "2",
+                "nRows": "2",
+                "vertices": [
+                    [
+                        545.92,
+                        143.23
+                    ],
+                    [
+                        574.08,
+                        143.23
+                    ],
+                    [
+                        545.92,
+                        202.37
+                    ],
+                    [
+                        574.08,
+                        202.37
+                    ]
+                ]
+            },
+            "id": 17,
+            "locked": "false",
+            "name": "ladrillo r1c7",
+            "opacity": "0.6299999952316284",
+            "solo": "false",
+            "sourceId": 2,
+            "visible": "true"
+        },
+        {
+            "className": "ColorLayer",
+            "depth": "16",
+            "destination": {
+                "className": "Mesh",
+                "locked": "false",
+                "nColumns": "2",
+                "nRows": "2",
+                "vertices": [
+                    [
+                        483.84,
+                        143.23
+                    ],
+                    [
+                        540.16,
+                        143.23
+                    ],
+                    [
+                        483.84,
+                        202.37
+                    ],
+                    [
+                        540.16,
+                        202.37
+                    ]
+                ]
+            },
+            "id": 16,
+            "locked": "false",
+            "name": "ladrillo r1c6",
+            "opacity": "0.4580000042915344",
+            "solo": "false",
+            "sourceId": 2,
+            "visible": "true"
+        },
+        {
+            "className": "ColorLayer",
+            "depth": "15",
+            "destination": {
+                "className": "Mesh",
+                "locked": "false",
+                "nColumns": "2",
+                "nRows": "2",
+                "vertices": [
+                    [
+                        419.84,
+                        143.23
+                    ],
+                    [
+                        476.16,
+                        143.23
+                    ],
+                    [
+                        419.84,
+                        202.37
+                    ],
+                    [
+                        476.16,
+                        202.37
+                    ]
+                ]
+            },
+            "id": 15,
+            "locked": "false",
+            "name": "ladrillo r1c5",
+            "opacity": "1",
+            "solo": "false",
+            "sourceId": 2,
+            "visible": "true"
+        },
+        {
+            "className": "ColorLayer",
+            "depth": "14",
+            "destination": {
+                "className": "Mesh",
+                "locked": "false",
+                "nColumns": "2",
+                "nRows": "2",
+                "vertices": [
+                    [
+                        355.84,
+                        143.23
+                    ],
+                    [
+                        412.16,
+                        143.23
+                    ],
+                    [
+                        355.84,
+                        202.37
+                    ],
+                    [
+                        412.16,
+                        202.37
+                    ]
+                ]
+            },
+            "id": 14,
+            "locked": "false",
+            "name": "ladrillo r1c4",
+            "opacity": "0.6610000133514404",
+            "solo": "false",
+            "sourceId": 2,
+            "visible": "true"
+        },
+        {
+            "className": "ColorLayer",
+            "depth": "13",
+            "destination": {
+                "className": "Mesh",
+                "locked": "false",
+                "nColumns": "2",
+                "nRows": "2",
+                "vertices": [
+                    [
+                        291.84,
+                        143.23
+                    ],
+                    [
+                        348.16,
+                        143.23
+                    ],
+                    [
+                        291.84,
+                        202.37
+                    ],
+                    [
+                        348.16,
+                        202.37
+                    ]
+                ]
+            },
+            "id": 13,
+            "locked": "false",
+            "name": "ladrillo r1c3",
+            "opacity": "0.8199999928474426",
+            "solo": "false",
+            "sourceId": 2,
+            "visible": "true"
+        },
+        {
+            "className": "ColorLayer",
+            "depth": "12",
+            "destination": {
+                "className": "Mesh",
+                "locked": "false",
+                "nColumns": "2",
+                "nRows": "2",
+                "vertices": [
+                    [
+                        227.84,
+                        143.23
+                    ],
+                    [
+                        284.16,
+                        143.23
+                    ],
+                    [
+                        227.84,
+                        202.37
+                    ],
+                    [
+                        284.16,
+                        202.37
+                    ]
+                ]
+            },
+            "id": 12,
+            "locked": "false",
+            "name": "ladrillo r1c2",
+            "opacity": "1",
+            "solo": "false",
+            "sourceId": 2,
+            "visible": "true"
+        },
+        {
+            "className": "ColorLayer",
+            "depth": "11",
+            "destination": {
+                "className": "Mesh",
+                "locked": "false",
+                "nColumns": "2",
+                "nRows": "2",
+                "vertices": [
+                    [
+                        163.84,
+                        143.23
+                    ],
+                    [
+                        220.16,
+                        143.23
+                    ],
+                    [
+                        163.84,
+                        202.37
+                    ],
+                    [
+                        220.16,
+                        202.37
+                    ]
+                ]
+            },
+            "id": 11,
+            "locked": "false",
+            "name": "ladrillo r1c1",
+            "opacity": "0.8799999952316284",
+            "solo": "false",
+            "sourceId": 2,
+            "visible": "true"
+        },
+        {
+            "className": "ColorLayer",
+            "depth": "10",
+            "destination": {
+                "className": "Mesh",
+                "locked": "false",
+                "nColumns": "2",
+                "nRows": "2",
+                "vertices": [
+                    [
+                        99.84,
+                        143.23
+                    ],
+                    [
+                        156.16,
+                        143.23
+                    ],
+                    [
+                        99.84,
+                        202.37
+                    ],
+                    [
+                        156.16,
+                        202.37
+                    ]
+                ]
+            },
+            "id": 10,
+            "locked": "false",
+            "name": "ladrillo r1c0",
+            "opacity": "0.6349999904632568",
+            "solo": "false",
+            "sourceId": 2,
+            "visible": "true"
+        },
+        {
+            "className": "ColorLayer",
+            "depth": "9",
+            "destination": {
+                "className": "Mesh",
+                "locked": "false",
+                "nColumns": "2",
+                "nRows": "2",
+                "vertices": [
+                    [
+                        65.92,
+                        143.23
+                    ],
+                    [
+                        94.08,
+                        143.23
+                    ],
+                    [
+                        65.92,
+                        202.37
+                    ],
+                    [
+                        94.08,
+                        202.37
+                    ]
+                ]
+            },
+            "id": 9,
+            "locked": "false",
+            "name": "ladrillo r1c0",
+            "opacity": "0.6349999904632568",
+            "solo": "false",
+            "sourceId": 2,
+            "visible": "true"
+        },
+        {
+            "className": "ColorLayer",
+            "depth": "8",
+            "destination": {
+                "className": "Mesh",
+                "locked": "false",
+                "nColumns": "2",
+                "nRows": "2",
+                "vertices": [
+                    [
+                        515.84,
+                        76.03
+                    ],
+                    [
+                        572.16,
+                        76.03
+                    ],
+                    [
+                        515.84,
+                        135.17
+                    ],
+                    [
+                        572.16,
+                        135.17
+                    ]
+                ]
+            },
+            "id": 8,
+            "locked": "false",
+            "name": "ladrillo r0c7",
+            "opacity": "0.6299999952316284",
+            "solo": "false",
+            "sourceId": 2,
+            "visible": "true"
+        },
+        {
+            "className": "ColorLayer",
+            "depth": "7",
+            "destination": {
+                "className": "Mesh",
+                "locked": "false",
+                "nColumns": "2",
+                "nRows": "2",
+                "vertices": [
+                    [
+                        451.84,
+                        76.03
+                    ],
+                    [
+                        508.16,
+                        76.03
+                    ],
+                    [
+                        451.84,
+                        135.17
+                    ],
+                    [
+                        508.16,
+                        135.17
+                    ]
+                ]
+            },
+            "id": 7,
+            "locked": "false",
+            "name": "ladrillo r0c6",
+            "opacity": "0.4580000042915344",
+            "solo": "false",
+            "sourceId": 2,
+            "visible": "true"
+        },
+        {
+            "className": "ColorLayer",
+            "depth": "6",
+            "destination": {
+                "className": "Mesh",
+                "locked": "false",
+                "nColumns": "2",
+                "nRows": "2",
+                "vertices": [
+                    [
+                        387.84,
+                        76.03
+                    ],
+                    [
+                        444.16,
+                        76.03
+                    ],
+                    [
+                        387.84,
+                        135.17
+                    ],
+                    [
+                        444.16,
+                        135.17
+                    ]
+                ]
+            },
+            "id": 6,
+            "locked": "false",
+            "name": "ladrillo r0c5",
+            "opacity": "1",
+            "solo": "false",
+            "sourceId": 2,
+            "visible": "true"
+        },
+        {
+            "className": "ColorLayer",
+            "depth": "5",
+            "destination": {
+                "className": "Mesh",
+                "locked": "false",
+                "nColumns": "2",
+                "nRows": "2",
+                "vertices": [
+                    [
+                        323.84,
+                        76.03
+                    ],
+                    [
+                        380.16,
+                        76.03
+                    ],
+                    [
+                        323.84,
+                        135.17
+                    ],
+                    [
+                        380.16,
+                        135.17
+                    ]
+                ]
+            },
+            "id": 5,
+            "locked": "false",
+            "name": "ladrillo r0c4",
+            "opacity": "0.6610000133514404",
+            "solo": "false",
+            "sourceId": 2,
+            "visible": "true"
+        },
+        {
+            "className": "ColorLayer",
+            "depth": "4",
+            "destination": {
+                "className": "Mesh",
+                "locked": "false",
+                "nColumns": "2",
+                "nRows": "2",
+                "vertices": [
+                    [
+                        259.84,
+                        76.03
+                    ],
+                    [
+                        316.16,
+                        76.03
+                    ],
+                    [
+                        259.84,
+                        135.17
+                    ],
+                    [
+                        316.16,
+                        135.17
+                    ]
+                ]
+            },
+            "id": 4,
+            "locked": "false",
+            "name": "ladrillo r0c3",
+            "opacity": "0.8199999928474426",
+            "solo": "false",
+            "sourceId": 2,
+            "visible": "true"
+        },
+        {
+            "className": "ColorLayer",
+            "depth": "3",
+            "destination": {
+                "className": "Mesh",
+                "locked": "false",
+                "nColumns": "2",
+                "nRows": "2",
+                "vertices": [
+                    [
+                        195.84,
+                        76.03
+                    ],
+                    [
+                        252.16,
+                        76.03
+                    ],
+                    [
+                        195.84,
+                        135.17
+                    ],
+                    [
+                        252.16,
+                        135.17
+                    ]
+                ]
+            },
+            "id": 3,
+            "locked": "false",
+            "name": "ladrillo r0c2",
+            "opacity": "1",
+            "solo": "false",
+            "sourceId": 2,
+            "visible": "true"
+        },
+        {
+            "className": "ColorLayer",
+            "depth": "2",
+            "destination": {
+                "className": "Mesh",
+                "locked": "false",
+                "nColumns": "2",
+                "nRows": "2",
+                "vertices": [
+                    [
+                        131.84,
+                        76.03
+                    ],
+                    [
+                        188.16,
+                        76.03
+                    ],
+                    [
+                        131.84,
+                        135.17
+                    ],
+                    [
+                        188.16,
+                        135.17
+                    ]
+                ]
+            },
+            "id": 2,
+            "locked": "false",
+            "name": "ladrillo r0c1",
+            "opacity": "0.8799999952316284",
+            "solo": "false",
+            "sourceId": 2,
+            "visible": "true"
+        },
+        {
+            "className": "ColorLayer",
+            "depth": "1",
+            "destination": {
+                "className": "Mesh",
+                "locked": "false",
+                "nColumns": "2",
+                "nRows": "2",
+                "vertices": [
+                    [
+                        67.84,
+                        76.03
+                    ],
+                    [
+                        124.16,
+                        76.03
+                    ],
+                    [
+                        67.84,
+                        135.17
+                    ],
+                    [
+                        124.16,
+                        135.17
+                    ]
+                ]
+            },
+            "id": 1,
+            "locked": "false",
+            "name": "ladrillo r0c0",
+            "opacity": "0.6349999904632568",
+            "solo": "false",
+            "sourceId": 2,
+            "visible": "true"
+        }
+    ],
+    "sources": [
+        {
+            "className": "Color",
+            "color": "#ffc23d",
+            "id": 2,
+            "locked": "false",
+            "name": "#ffc23d",
+            "opacity": "1"
+        }
+    ],
+    "version": "1.0.0-alpha.1"
+}
